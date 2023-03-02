@@ -1,0 +1,100 @@
+/* #cv-form{
+   display: none;
+} */
+
+.background{
+   background-color:rgb(39, 39, 80);
+   color: white;
+}
+
+.row1{
+   display: flex;
+   flex: auto;
+grid-gap: 20px;
+
+}
+#first{
+   min-width: 200px;
+   margin-left: -12px;
+
+}
+
+.card{
+   min-width: 300px;
+}
+#hidetemplatebtn{
+display: none;
+}
+#NameT2{
+   text-align: justify;
+}
+#NameT{
+   font-size: 35px;
+   text-align: justify;
+}
+#presnol-info{
+   text-align: left;
+}
+#contactT{
+   background-color:rgb(13, 13, 51);
+   padding-left: 15px;
+   padding-bottom: 5px;
+   margin-left: -12px;
+}
+#addressT{
+   font-weight: 900px;
+   font-size: 15px;
+   
+}
+#pincodeT{
+   text-align: left;
+   word-wrap: break-word;
+     margin-top: -10px;
+}
+#addressTinfo{
+   text-align: left;
+ word-wrap: break-word;
+   margin-top: -10px;
+}
+#addressTinfo2{
+   text-align: left;
+ word-wrap: break-word;
+   margin-top: -10px;
+}
+#PhoneNumberT{
+   text-align: left;
+   word-wrap: break-word;
+     margin-top: -10px;
+}
+#EmailidT{
+   text-align: left;
+   word-wrap: break-word;
+     margin-top: -10px;
+}
+.card{
+   
+   border: none;
+}
+#abc{
+   border-top: 1px solid black ;
+border-radius: 0;
+color:rgb(39, 39, 80);
+background-color: white;
+   border-bottom: 1px solid black ;
+}
+.objectiveT
+{
+
+  text-align: justify;
+}
+
+@media(max-width: 768px) {
+   /* .row1{
+    justify-content: space-around;
+   
+   } */
+ }
+ 
+ #LastnameT{
+   margin-top: -10px;
+ }

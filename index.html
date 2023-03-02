@@ -1,0 +1,874 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+
+<!-- <script src="html2pnglb.js"></script> -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<script src="https://cdn.ckeditor.com/4.20.2/standard/ckeditor.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.js"></script>
+<link rel="stylesheet" href="formstyle.css">
+<style>
+
+	:root {
+    --primary-color: rgb(19, 100, 97);
+  }
+  body{
+    margin: 0;
+    padding: 0;
+
+  }
+
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  label {
+    text-align: left;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  input {
+    display: flex;
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+  }
+
+  .width-50 {
+    width: 50%;
+  }
+
+  .ml-auto {
+    margin-left: auto;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  .header {
+        padding: 0.8rem 6%;
+        box-shadow: 0 .5rem 1.5rem rgba(0, 0, 0, .1);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        background: #fff;
+    }
+
+    .header .logo {
+        font-size: 2rem;
+        color: var(--black);
+        text-decoration: none;
+    }
+
+  /* Progressbar */
+  .progressbar {
+    position: relative;
+    display: flex;
+    right: 0;
+    left: 2rem;
+    justify-content: flex-end;
+    counter-reset: step;
+    margin: 2rem;
+  }
+
+  .progressbar::before,
+  .progress {
+    content: "";
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    height: 4px;
+    width: 17%;
+    background-color: #dcdcdc;
+    z-index: -1;
+    left: 1rem;
+  }
+
+  .progress {
+    background-color: var(--primary-color);
+    width: 0%;
+    transition: 0.4s;
+  }
+
+  .progress-step {
+    width: 6rem;
+    height: 2rem;
+    background-color: #dcdcdc;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .progress-step::before {
+    counter-increment: step;
+    content: counter(step);
+  }
+
+  .progress-step::after {
+    content: attr(data-title);
+    position: absolute;
+    top: calc(100% + 0.5rem);
+    font-size: 0.85rem;
+    color: #666;
+  }
+
+  .progress-step-active {
+    background-color: var(--primary-color);
+    color: #f3f3f3;
+    width: 8rem;
+    height: 2.5rem;
+  }
+
+  /* Form */
+
+
+  .form {
+    width: 45rem;
+    margin: 0 auto;
+    padding: 3rem;
+    margin-top: 3rem;
+    border: 1px solid black;
+    box-shadow: 0 .5rem 1.5rem rgba(6, 101, 156, 0.616);
+	margin-bottom: 4rem;
+  }
+
+  .form-step {
+    display: none;
+    transform-origin: initial;
+    animation: animate 0.5s;
+  }
+
+.form-step-active{
+  display: flex;
+  flex-direction: column;
+}
+.rowform {
+    display:flex;
+    flex-direction:row;
+}
+.input-group {
+    flex:1;  
+    display:flex;
+    flex-direction:column; 
+    margin: 10px 10px ;
+}
+.select{
+  padding: 0.7rem;
+  width: 15rem;
+  margin:0.8rem;
+
+}
+.search-input input{
+  height: 55px;
+  width: 100%;
+  outline: none;
+  border: none;
+  border-radius: 5px;
+  padding: 0 60px 0 20px;
+  font-size: 18px;
+  box-shadow: 0px 1px 5px rgba(0,0,0,0.1);
+}
+.search-input.active input{
+  border-radius: 5px 5px 0 0;
+}
+.search-input .autocom-box{
+  padding: 0;
+  opacity: 0;
+  pointer-events: none;
+  max-height: 280px;
+  overflow-y: auto;
+}
+.search-input.active .autocom-box{
+  padding: 10px 8px;
+  opacity: 1;
+  pointer-events: auto;
+}
+.autocom-box li{
+  list-style: none;
+  padding: 8px 12px;
+  display: none;
+  width: 100%;
+  cursor: default;
+  border-radius: 3px;
+}
+.search-input.active .autocom-box li{
+  display: block;
+}
+.autocom-box li:hover{
+  background: #efefef;
+}
+.search-input .icon{
+  height: 55px;
+  width: 55px;
+  text-align: center;
+  font-size: 25px;
+  color: rgb(19, 100, 97);
+  cursor: pointer;
+  margin-top: -2.3rem;
+  margin-left: 15rem;
+}
+.check{
+  padding: 3rem;
+
+}
+
+  @keyframes animate {
+    from {
+      transform: scale(1, 0);
+      opacity: 0;
+    }
+
+    to {
+      transform: scale(1, 1);
+      opacity: 1;
+    }
+  }
+
+  /* Button */
+  .btns-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30rem;
+    margin-top: 1rem;
+  }
+
+  .btn {
+    padding: 0.75rem;
+    display: block;
+    text-decoration: none;
+    background-color: var(--primary-color);
+    color: #f3f3f3;
+    text-align: center;
+    cursor: pointer;
+    width: 5rem;
+    transition: 0.3s;
+    
+  }
+
+  .btn:hover {
+    box-shadow: 0 0 0 2px #fff, 0 0 0 3px var(--primary-color);
+  }
+  .upload{
+  width: 100px;
+  position: relative;
+  margin: auto;
+}
+  .upload img{
+  border-radius: 5%;
+  border: 1px solid whitesmoke;
+}
+
+input[type=file]::-webkit-file-upload-button{
+    cursor: pointer;
+}
+
+.btn-warning{
+  position: relative;
+  padding: 5px;
+  font-size: 10px;
+  line-height: 1.5;
+  border-radius: 3px;
+  color: #fff;
+  background-color: rgb(19, 100, 97);
+  border: 0;
+  width: 5rem;
+  transition: 0.2s;
+  overflow: hidden;
+}
+
+.btn-warning input[type = "file"]{
+  cursor: pointer;
+  position: absolute;
+  left: 0%;
+  top: 0%;
+  transform: scale(3);
+  opacity: 0;
+}
+
+.btn-warning:hover{
+  background-color: #d9a400;
+}
+@media(max-width: 700px) {
+  .rowform{
+      flex-direction:column; 
+    }
+    h2{
+      margin-left: 4rem;
+    }
+    .progress{
+      margin-left: -48rem;
+    }
+    .ml-auto{
+      margin-left: 26rem;
+    }
+    .progressbar{
+      left: 0;
+    }
+}
+
+@media(max-width: 600px) {
+  .rowform{
+      flex-direction:column; 
+    }
+    h2{
+      margin-left: 4rem;
+    }
+    .progress{
+      margin-left: -48rem;
+    }
+    .progressbar{
+      left: 0;
+    }
+    .progress-step-active{
+      width: 3rem;
+      height: auto;
+    }
+    
+    .btn{
+      margin-left: 5rem;
+    }
+    .btns-group{
+      gap: 8rem;
+    }
+
+}
+@media(max-width: 500px) {
+  .rowform{
+      flex-direction:column; 
+    }
+    h2{
+      margin-left: 4rem;
+    }
+    .progress-step{
+      flex-direction: column;
+    }
+    .progress{
+      margin-left: -48rem;
+    }
+    .progressbar{
+      left: 0;
+    }
+    .progress-step::after{
+      font-size: 14px;
+    }
+    .progress-step-active{
+      width: 3rem;
+      height: auto;
+    }
+    .btns-group{
+      gap: 8rem;
+    }
+}
+@media(max-width: 400px) {
+  .rowform{
+      flex-direction:column; 
+    }
+    h2{
+      margin-left: 4rem;
+    }
+    .progress{
+      margin-left: -48rem;
+    }
+    .progressbar{
+      left: 0;
+    }
+    .progress-step::after{
+      font-size: 14px;
+    }
+    .progress-step-active{
+      width: 3rem;
+      height: auto;
+    }
+    .btns-group{
+      gap: 8rem;
+    }
+}
+@media(max-width: 300px) {
+  .rowform{
+      flex-direction:column; 
+      
+    }
+    h2{
+      margin-left: 4rem;
+    }
+    .progress{
+      margin-left: -48rem;
+    }
+    .progressbar{
+      left: 0;
+    }
+    .progress-step::after{
+      font-size: 14px;
+    }
+    .progress-step-active{
+      width: 3rem;
+      height: auto;
+    }
+    .btns-group{
+      gap: 8rem;
+    }
+}
+
+
+#Accomplishments{
+  text-align: center;
+}
+@media(max-width: 700px){#ch{
+  display: flex;
+  flex-direction: row;
+}}
+/* 
+#sec{
+  display: none;
+} */
+.Button-parent{
+	display: flex;
+	justify-content: center;
+	margin-top: 20px;
+	gap: 20px;
+}
+</style>
+</head>
+<body>
+	<section id="sec">
+		<header class="header">
+		  <a href="#" class="logo"><span style="color: rgba(2, 92, 95, 0.904);"><b>Resume</b></span> B..</a>
+	  </header><br>
+		
+		<form action="#" class="form" id="formid">
+		  <div class="progressbar">
+			<div class="progress" id="progress"></div>
+			
+			<div class="progress-step progress-step-active" data-title="heading"></div>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="progress-step" data-title="work history"></div>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="progress-step" data-title="education"></div>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="progress-step" data-title="skill"></div>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="progress-step" data-title="summary"></div>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<div class="progress-step" data-title="finalize"></div>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		
+		  </div>
+		  <br><br><br>
+		  
+		  <div class="form-step form-step-active">
+	  
+			<div class="rowform">  
+		  <div class="upload">
+			<img src="D:\major\prof.png" width = 100 height = 100 alt="">
+			<button type = "button" class = "btn-warning">
+			  <i class = "fa fa-upload"></i> Upload File
+			  <input type="file">
+			</button>
+		  </div>
+	  
+			<div class="rowform">
+			<div class="input-group">
+			  <label>First name </label>
+			 <input type="text" placholder="Enter your first name" id="Firstname">
+			</div>
+			<div class="input-group">
+			  <label>Last name</label>
+			 <input type="text" placholder="Enter your last name" id="Lastname">
+			</div>
+		  </div>
+			</div>
+		  <div class="rowform">
+		  <div class="input-group">
+			<label>Proffesion</label>
+		   <input type="text" placholder="Enter your Proffesion" id="Proffesion">
+		  </div>
+		  </div>
+		  <div class="rowform">
+			<div class="input-group">
+			  <label>City</label>
+			 <input type="text" placholder="Enter City" id="City">
+			</div>
+			<div class="input-group">
+			  <label>Country</label>
+			 <input type="text" placholder="Enter Country" id="Country">
+			</div>
+			<div class="input-group">
+			  <label>Pin Code</label>
+			 <input type="text" placholder="Enter Pin Code" id="PinCode2">
+			</div>
+			</div>
+			<div class="rowform">
+			  <div class="input-group">
+				<label>Phone </label>
+			   <input type="text" placholder="Enter your first name" id="PhoneIN">
+			  </div>
+			  <div class="input-group">
+				<label>Email</label>
+			   <input type="text" placholder="Enter your last name" id="EmailIN">
+			  </div>
+			</div><br>
+			<div class="">
+			  <a href="#" class="btn btn-next width-50 ml-auto">Next</a>
+			</div>
+		  </div>
+	  
+	  
+		  <div class="form-step">
+			<div class="rowform"> 
+			<div class="input-group">
+			  <label for="phone">job Title</label>
+			  <input type="text" name="job Title" id="job Title" />
+			</div>
+			<div class="input-group">
+			  <label for="email">Employer</label>
+			  <input type="text" name="Employer" id="Employer" />
+			</div>
+			</div>
+			<div class="rowform"> 
+			  <div class="input-group">
+				<label for="phone">City</label>
+				<input type="text" name="City" id="City" />
+			  </div>
+			  <div class="input-group">
+				<label for="email">Country</label>
+				<input type="text" name="Country" id="Country" />
+			  </div>
+			  </div>
+			  <div class="rowform"> 
+				<div class="input-group">
+				  <label for="phone">Start Date</label>
+				  <input type="date" name="Start Date" id="Start Data" />
+				</div>
+				<div class="input-group">
+				  <label for="email">End Date</label>
+				  <input type="date" name="End Date" id="End Date" />
+				</div>
+				</div>
+			<div class="btns-group">
+			  <a href="#" class="btn btn-prev">Previous</a>
+			  <a href="#" class="btn btn-next">Next</a>
+			</div>
+		  </div>
+	  
+		  <div class="form-step">
+			<div class="rowform">
+			<div class="input-group">
+			  <label for="School Name">School Name</label>
+			  <input type="text" name="School Name" id="School Name" />
+			</div>
+			<div class="input-group">
+			  <label for="School Location">School Location</label>
+			  <input type="text" name="School Location" id="School Location" />
+			</div>
+			</div>
+			<div class="rowform">
+			  <select class="select">
+				<option value="By the way">Select Degree</option>
+				<option value="Talk to you later">TTYL</option>
+				<option value="To be honest">TBH</option>
+				<option value=" I don’t know">IDK</option>
+			</select>
+			</div>
+			<div class="rowform">
+			  <div class="input-group">
+				<label for="dob">Fiel Of Study</label>
+				<input type="text" name="dob" id="dob" />
+			  </div>
+			  <div class="input-group">
+				<label for="ID">Graduation Start Date</label>
+				<input type="date" name="ID" id="ID" />
+			  </div>
+			  <div class="input-group">
+				<label for="ID">Graduation End Date</label>
+				<input type="date" name="ID" id="ID" />
+			  </div>
+			  </div>
+			 
+			<div class="btns-group">
+			  <a href="#" class="btn btn-prev">Previous</a>
+			  <a href="#" class="btn btn-next">Next</a>
+			</div>
+		  </div>
+	  
+		  <div class="form-step">
+		  <br><br><br><br><br><br>
+			<div class="btns-group">
+			  <a href="#" class="btn btn-prev">Previous</a>
+			  <a href="#" class="btn btn-next">Next</a>
+			</div>
+	  
+		  </div>
+	  
+		  <div class="form-step">
+			<label>Type your summary here</label><br>
+			  <textarea name="editor1"></textarea>
+			  <script>
+					  CKEDITOR.replace( 'editor1' );
+			  </script><br><br>
+			<div class="btns-group">
+			  <a href="#" class="btn btn-prev">Previous</a>
+			  <a href="#" class="btn btn-next">Next</a>
+			</div>
+		  </div>
+	  
+		  <div class="form-step">
+			<h2><span style="color: brown;">Do you have anything else to add?</span></h2>
+			<h4>This section are optional</h4>
+			<div class="rowform" id="ch"> 
+			  &nbsp; &nbsp;  <input type="checkbox" id="Accomplishments" >
+				<label for="Accomplishments">Accomplishments</label><br>
+		 
+			  </div><br>
+			  <div class="rowform"id="ch" > 
+				&nbsp; &nbsp;  <input type="checkbox" id="Certifications">
+				  <label for="Certifications">Certifications</label><br>
+				</div><br>
+				<div class="rowform"id="ch"> 
+				  &nbsp; &nbsp;  <input type="checkbox"  id="Additional Information">
+					<label for="Additional Information">Additional Information</label><br>
+				  </div><br>
+				  <div class="rowform"id="ch"> 
+					&nbsp; &nbsp;  <input type="checkbox"  id="Software">
+					  <label for="Software">Software</label><br>
+					</div><br>
+					<div class="rowform"id="ch"> 
+					  &nbsp; &nbsp;  <input type="checkbox" id="Languages">
+						<label for="Languages">Languages</label><br>
+					  </div><br><br><br><br>
+	  
+				  <div class="btns-group">
+					<a href="#" class="btn btn-prev" >Previous</a>
+					<a href="#" class="btn btn-next" onclick="fainalize()">Next</a>
+				  </div>
+		  </div>
+		  
+		</form>
+	  </section>
+	<div class="container" id="cv-template">
+		<div class="row1  " id="cv-template" >
+			<div class=" text-center background  " id="first" >
+				<img src="NoImage.jpg" class="img-fluid myimg mt-4" alt="">
+				<div class="container" id="presnol-info">
+				
+					
+					<h1 id="NameT">Himanshu Jadhav </h1>
+					<p id="NumberT">Profession</p>
+					<h4 id="contactT">Contact   </h4>
+					<p id="addressT"> <b>Addess</b> </p>
+					<p id="addressTinfo">Shirpur,India 425405</p>
+					<p id="addressT"> <b>Phone</b> </p>
+					<p id="addressTinfo">07058314868</p>
+					<p id="addressT"> <b>E-mail</b> </p>
+					<p id="addressTinfo">himanshujadhav341@gmail.com</p>
+					
+				</div>
+			</div>
+	   
+			<div class="  py-5 " id="second">
+		
+				<p class="" id="NameT2">To seek and maintain full-time position that offers professional challenges utilizing interpersonal skills, excellent time management and problem-solving skills.</p>
+				<div class="card mt-4">
+					<div class="card-header " id="abc">
+						
+					<h3>Work History</h3>
+					</div>
+					<div class="card-body" >
+						<div class="container">
+							<div class="row1">
+<div id="first"><p>22/01/22</p></div>
+
+						<div id="second">
+							<h5>Software Engineer</h5>
+						
+							<p>Himanshu,Shirpur</p>
+						<p id="objectiveT">Lorem ipsum dolor, sit amet consectetur adipisicing elit. Asperiores, perspiciatis?</p>
+                      
+						</div>
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="card mt-4">
+					<div class="card-header "id="abc">
+					<h3>Work Expereance</h3>
+					</div>
+					<div class="card-body">
+						<ul id="weT">
+							<li>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Vel iste voluptatibus rerum possimus ipsa obcaecati asperiores accusantium sed nihil aperiam?</li>
+						</ul>
+					</div>
+				</div>
+				<div class="card mt-4">
+					<div class="card-header "id="abc">
+					<h3>Acadmic Qulification</h3>
+					</div>
+					<div class="card-body">
+						<ul id="AcadmicT">
+							<li>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Vel iste voluptatibus rerum possimus ipsa obcaecati asperiores accusantium sed nihil aperiam?</li>
+						</ul>
+					</div>
+				</div>
+				
+			</div>
+		 
+		</div>
+        <!-- <input id="btn_convert" type="button" value="Convert to Image" />
+
+        <br /> -->
+        <!-- <h3>Preview :</h3>
+        <div id="previewImg">
+<img src="" alt="" height="100px" width="100px" id="imges">
+        </div> -->
+   </div>
+
+   <!-- <script>$(document).ready(function () {
+    
+    $("#btn_convert").on('click', function () {
+        html2canvas(document.getElementById("cv-template"),
+            {
+                allowTaint: true,
+                useCORS: true
+            }).then(function (canvas) {
+                var anchorTag = document.getElementById("imges");
+				
+                document.body.appendChild(anchorTag);
+                document.getElementById("previewImg").appendChild(canvas);
+               
+            });
+    });
+
+});</script> -->
+<section>
+	<div class="Button-parent">
+		<div>	<button class="btn" onclick="CVgenerator()">Generate CV</button></div>
+	
+		<div><button class="btn" id="cvggnbtn">Print</button></div>
+	</div>
+</section>
+<script>
+    const prevBtns = document.querySelectorAll(".btn-prev");
+    const nextBtns = document.querySelectorAll(".btn-next");
+    const progress = document.getElementById("progress");
+    const formSteps = document.querySelectorAll(".form-step");
+    const progressSteps = document.querySelectorAll(".progress-step");
+
+    let formStepsNum = 0;
+
+    nextBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        formStepsNum++;
+        updateFormSteps();
+        updateProgressbar();
+      });
+    });
+
+    prevBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        formStepsNum--;
+        updateFormSteps();
+        updateProgressbar();
+      });
+    });
+
+    function updateFormSteps() {
+      formSteps.forEach((formStep) => {
+        formStep.classList.contains("form-step-active") &&
+          formStep.classList.remove("form-step-active");
+      });
+
+      formSteps[formStepsNum].classList.add("form-step-active");
+    }
+
+    function updateProgressbar() {
+      progressSteps.forEach((progressStep, idx) => {
+        if (idx < formStepsNum + 1) {
+          progressStep.classList.add("progress-step-active");
+        } else {
+          progressStep.classList.remove("progress-step-active");
+        }
+      });
+
+      const progressActive = document.querySelectorAll(".progress-step-active");
+
+      progress.style.width =
+        ((progressActive.length - 1) / (progressSteps.length - 1)) * 85 + "%";
+    }
+  </script>
+  <script>
+    let suggestions = [
+    "Channel",
+    "CodingLab",
+    "CodingNepal",
+    "YouTube",
+    "YouTuber",
+    "YouTube Channel",
+    "Blogger"]
+  </script>
+  <script>
+    const searchWrapper = document.querySelector(".search-input");
+const inputBox = searchWrapper.querySelector("input");
+const suggBox = searchWrapper.querySelector(".autocom-box");
+const icon = searchWrapper.querySelector(".icon");
+let linkTag = searchWrapper.querySelector("a");
+let webLink;
+// if user press any key and release
+inputBox.onkeyup = (e)=>{
+    let userData = e.target.value; //user enetered data
+    let emptyArray = [];
+    if(userData){
+        icon.onclick = ()=>{
+            webLink = `https://www.google.com/search?q=${userData}`;
+            linkTag.setAttribute("href", webLink);
+            linkTag.click();
+        }
+        emptyArray = suggestions.filter((data)=>{
+            //filtering array value and user characters to lowercase and return only those words which are start with user enetered chars
+            return data.toLocaleLowerCase().startsWith(userData.toLocaleLowerCase());
+        });
+        emptyArray = emptyArray.map((data)=>{
+            // passing return data inside li tag
+            return data = `<li>${data}</li>`;
+        });
+        searchWrapper.classList.add("active"); //show autocomplete box
+        showSuggestions(emptyArray);
+        let allList = suggBox.querySelectorAll("li");
+        for (let i = 0; i < allList.length; i++) {
+            //adding onclick attribute in all li tag
+            allList[i].setAttribute("onclick", "select(this)");
+        }
+    }else{
+        searchWrapper.classList.remove("active"); //hide autocomplete box
+    }
+}
+function select(element){
+    let selectData = element.textContent;
+    inputBox.value = selectData;
+    icon.onclick = ()=>{
+        webLink = `https://www.google.com/search?q=${selectData}`;
+        linkTag.setAttribute("href", webLink);
+        linkTag.click();
+    }
+    searchWrapper.classList.remove("active");
+}
+function showSuggestions(list){
+    let listData;
+    if(!list.length){
+        userValue = inputBox.value;
+        listData = `<li>${userValue}</li>`;
+    }else{
+      listData = list.join('');
+    }
+    suggBox.innerHTML = listData;
+}
+
+  </script>
+  <script src="formscript.js"></script>
+</body>
+
+</html>
+ 
+                        
